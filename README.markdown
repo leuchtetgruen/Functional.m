@@ -2,6 +2,13 @@
 
 Functional.m is an extension for objective-c, that can be used to do functional programming.
 
+At the moment it adds the following functions to NSArray and NSDictionary (this list will be extended soon):
+
+	- each
+	- map
+	- reduce
+	- filter
+
 ```objc
 	// Filter -> Array
 	NSArray *arr = [NSArray arrayWithObjects:[NSNumber numberWithInt:1], [NSNumber numberWithInt:2],[NSNumber numberWithInt:3],[NSNumber numberWithInt:4], nil];
