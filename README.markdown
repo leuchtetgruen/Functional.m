@@ -49,3 +49,28 @@ Example:
     }];
     NSLog(@"Double Dict %@", doubleDict);
 ```
+
+##reduce
+
+Reduces all objects in the collection to a single value (something like computing the average etc.)
+
+- `- (NSObject *) reduce:(ReduceArrayBlock) block withInitialMemo:(NSObject *) memo;`
+- `- (NSObject *) reduce:(ReduceDictBlock) block withInitialMemo:(NSObject *) memo;`
+
+Example - adds all NSNumbers in the array or dictionary.
+
+```objc 
+	//Array reduce
+    NSNumber *memo = [NSNumber numberWithInt:0];
+    NSNumber *reducedArr = (NSNumber *) [arr reduce:^NSObject *(NSObject *memo, NSObject *obj) {
+        return [NSNumber numberWithInt:([((NSNumber *) memo) intValue]) + ([((NSNumber *) obj) intValue])];
+    } withInitialMemo:memo];
+    
+    NSLog(@"Reduced Array : %@", reducedArr);
+    
+    //Dict reduce
+    NSNumber *reducedDict = (NSNumber *) [dict reduce:^NSObject *(NSObject *memo, NSObject *key, NSObject *value) {
+        return [NSNumber numberWithInt:([((NSNumber *) memo) intValue]) + ([((NSNumber *) value) intValue])];
+    } withInitialMemo:memo];
+    NSLog(@"Reduced Dict : %@", reducedDict);
+```
