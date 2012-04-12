@@ -74,3 +74,37 @@ Example - adds all NSNumbers in the array or dictionary.
     } withInitialMemo:memo];
     NSLog(@"Reduced Dict : %@", reducedDict);
 ```
+
+##filter and reject
+
+`Filter` gives you only those objects, for that the iterator returns true. `Reject` removes all objects for that the iterator returns true.
+
+- `- (NSArray *) filter:(BoolArrayBlock) block;`
+- `- (NSArray *) reject:(BoolArrayBlock) block;`
+
+- `- (NSDictionary*) filter:(BoolDictionaryBlock) block;`
+- `- (NSDictionary*) reject:(BoolDictionaryBlock) block;`
+
+This example gives you all even (filter) or odd (reject) numbers in the array / dict:
+
+```objc
+	BoolArrayBlock isEvenArrayBlock = ^BOOL (NSObject *obj) {
+        return (([((NSNumber *) obj) intValue] % 2) == 0);
+    };
+    NSArray *filteredArr = [arr filter:isEvenArrayBlock];
+    NSArray *rejectedArr = [arr reject:isEvenArrayBlock];
+    
+    NSLog(@"Filter(Array) returned %@", filteredArr);
+    NSLog(@"Array with only odd numbers %@", rejectedArr);
+
+
+    BoolDictionaryBlock isEvenDictBlock = ^BOOL (NSObject *key, NSObject *value) {
+        return (([((NSNumber *) value) intValue] % 2) == 0);
+    };
+    
+    NSDictionary *filteredDict = [dict filter:isEvenDictBlock];
+    NSDictionary *rejectedDict = [dict reject:isEvenDictBlock];
+
+    NSLog(@"Filter(Dictionary) returned %@", filteredDict);
+    NSLog(@"Reject(Dictionary) returned %@", rejectedDict);    
+```
