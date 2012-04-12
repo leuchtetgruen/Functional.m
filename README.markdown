@@ -138,3 +138,35 @@ This example checks if all or any elements in the collection are even numbers
     NSLog(@"Only even numbers in dictionary : %d - some even numbers in dictionary %d", allEvenInDictionary, someEvenInDictionary);
 
 ```
+
+##max and min
+
+Return the maximum and the minimum values in a collection. You will have to write a comperator, which compares two elements.
+
+- `- (NSObject *) max:(CompareArrayBlock) block;`
+- `- (NSObject *) min:(CompareArrayBlock) block;`
+
+- `- (NSObject *) max:(CompareDictBlock) block;`
+- `- (NSObject *) min:(CompareDictBlock) block;`
+
+Here's an example that gets the minimum and the maximum value from the array and dict described above:
+
+```objc
+    CompareArrayBlock arrCompare = ^NSComparisonResult(NSObject *a, NSObject *b) {
+        return [(NSNumber *) a compare:(NSNumber *) b];
+    };
+    
+    CompareDictBlock dictCompare = ^NSComparisonResult(NSObject *k1, NSObject *v1, NSObject *k2, NSObject *v2) {
+        return [(NSNumber *) v1 compare:(NSNumber *) v2];
+    };
+    
+    NSNumber *maxInArray = (NSNumber *) [arr max:arrCompare];
+    NSNumber *minInArray = (NSNumber *) [arr min:arrCompare];
+    
+    NSNumber *maxInDict = (NSNumber *) [dict max:dictCompare];
+    NSNumber *minInDict = (NSNumber *) [dict min:dictCompare];
+    
+    NSLog(@"Max in Array %@ - Min %@", maxInArray, minInArray);
+    NSLog(@"Max in Dict %@ - Min %@", maxInDict, minInDict);
+```
+
