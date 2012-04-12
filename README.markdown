@@ -177,3 +177,19 @@ Sort is actually just an alias for `[self sortedArrayUsingComparator:block];`
 - `- (NSArray *) sort:(NSComparator) block;`
 
 See [NSArray sortedArrayUsingComperator:](http://developer.apple.com/library/ios/DOCUMENTATION/Cocoa/Reference/Foundation/Classes/NSArray_Class/NSArray.html#//apple_ref/occ/instm/NSArray/sortedArrayUsingComparator:) for reference.
+
+##group
+
+Groups an array by the values returned by the iterator.
+
+- `- (NSDictionary *) group:(MapArrayBlock) block;`
+
+Here's an example that groups an array into an odd numbers section and an even numbers section:
+
+```objc
+	NSDictionary *oddEvenArray = [arr group:^NSObject *(NSObject *obj) {
+        if (([(NSNumber *) obj intValue] % 2) == 0) return @"even";
+        else return @"odd";
+    }];
+	NSLog(@"Grouped array %@", oddEvenArray);
+```
