@@ -193,3 +193,17 @@ Here's an example that groups an array into an odd numbers section and an even n
     }];
 	NSLog(@"Grouped array %@", oddEvenArray);
 ```
+
+##times
+
+Call times on an `NSNumber` (n) to iterate n times over the given block.
+
+- `- (void) times:(VoidBlock) block;`
+
+Here's a simple example:
+
+```objc
+	[[NSNumber numberWithInt:5] times:^{
+        NSLog(@"I do this 5 times");
+    }];
+```
