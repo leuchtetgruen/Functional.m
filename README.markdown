@@ -4,9 +4,6 @@ Functional.m is an extension for objective-c, that can be used to do functional 
 
 Here's the documentation for the individual functions:
 
-* auto-gen TOC:
-{:toc}
-
 The arr NSArray contains a collection of NSNumbers, The dict NSDictionary contains the same collection - the keys are the names of the numbers
 
 ##each
