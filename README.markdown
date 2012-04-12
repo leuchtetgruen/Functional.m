@@ -170,3 +170,10 @@ Here's an example that gets the minimum and the maximum value from the array and
     NSLog(@"Max in Dict %@ - Min %@", maxInDict, minInDict);
 ```
 
+##sort
+
+Sort is actually just an alias for `[self sortedArrayUsingComparator:block];`
+
+- `- (NSArray *) sort:(NSComparator) block;`
+
+See [NSArray sortedArrayUsingComperator:](http://developer.apple.com/library/ios/DOCUMENTATION/Cocoa/Reference/Foundation/Classes/NSArray_Class/NSArray.html#//apple_ref/occ/instm/NSArray/sortedArrayUsingComparator:) for reference.
