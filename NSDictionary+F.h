@@ -10,10 +10,13 @@
 #import "F.h"
 
 @interface NSDictionary(F)
-    - (void) each:(EachDictBlock) block;
+    - (void) each:(VoidIteratorDictBlock) block;
     - (NSDictionary *) map:(MapDictBlock) block;
     - (NSObject *) reduce:(ReduceDictBlock) block withInitialMemo:(NSObject *) memo;
-
-    - (NSDictionary*) filter:(FilterDictionaryBlock) block;
-
+    - (NSDictionary*) filter:(BoolDictionaryBlock) block;
+    - (NSDictionary*) reject:(BoolDictionaryBlock) block;
+    - (BOOL) isValidForAll:(BoolDictionaryBlock) block;
+    - (BOOL) isValidForAny:(BoolDictionaryBlock) block;
+    - (NSObject *) max:(CompareDictBlock) block;
+    - (NSObject *) min:(CompareDictBlock) block;
 @end

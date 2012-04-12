@@ -10,9 +10,17 @@
 #import "F.h"
 
 @interface NSArray(F)
-    - (void) each:(EachArrayBlock) block;
+    - (void) each:(VoidIteratorArrayBlock) block;
     - (NSArray *) map:(MapArrayBlock) block;
     - (NSObject *) reduce:(ReduceArrayBlock) block withInitialMemo:(NSObject *) memo;
+    - (NSArray *) filter:(BoolArrayBlock) block;
+    - (NSArray *) reject:(BoolArrayBlock) block;
+    - (BOOL) isValidForAll:(BoolArrayBlock) block;
+    - (BOOL) isValidForAny:(BoolArrayBlock) block;
+    - (NSObject *) max:(CompareArrayBlock) block;
+    - (NSObject *) min:(CompareArrayBlock) block;
+    - (NSArray *) sort:(NSComparator) block;
+    - (NSDictionary *) group:(MapArrayBlock) block;
 
-    - (NSArray *) filter:(FilterArrayBlock) block;
+    - (NSObject *) first;
 @end

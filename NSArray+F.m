@@ -10,7 +10,7 @@
 
 @implementation NSArray(F)
 
-- (void) each:(EachArrayBlock) block {
+- (void) each:(VoidIteratorArrayBlock) block {
     [F eachInArray:self withBlock:block];
 }
 
@@ -22,7 +22,42 @@
     return [F reduceArray:self withBlock:block andInitialMemo:memo];
 }
 
-- (NSArray *) filter:(FilterArrayBlock) block {
+- (NSArray *) filter:(BoolArrayBlock) block {
     return [F filterArray:self withBlock:block];
 }
+
+- (NSArray *) reject:(BoolArrayBlock) block {
+    return [F rejectArray:self withBlock:block];
+}
+
+- (BOOL) isValidForAll:(BoolArrayBlock) block {
+    return [F allInArray:self withBlock:block];
+}
+
+- (BOOL) isValidForAny:(BoolArrayBlock) block {
+    return [F anyInArray:self withBlock:block];
+}
+
+- (NSObject *) max:(CompareArrayBlock) block {
+    return [F maxArray:self withBlock:block];
+}
+
+- (NSObject *) min:(CompareArrayBlock) block {
+    return [F minArray:self withBlock:block];
+}
+
+// This is really just an alias
+- (NSArray *) sort:(NSComparator) block {
+    return [self sortedArrayUsingComparator:block];
+}
+
+- (NSDictionary *) group:(MapArrayBlock) block {
+    return [F groupArray:self withBlock:block];
+}
+
+// Just a helper method
+- (NSObject *) first {
+    return [self objectAtIndex:0];
+}
+
 @end

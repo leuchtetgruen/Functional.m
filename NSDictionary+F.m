@@ -10,7 +10,7 @@
 
 @implementation NSDictionary(F)
 
-- (void) each:(EachDictBlock) block {
+- (void) each:(VoidIteratorDictBlock) block {
     [F eachInDict:self withBlock:block];
 }
 
@@ -22,7 +22,27 @@
     return [F reduceDictionary:self withBlock:block andInitialMemo:memo];
 }
 
-- filter:(FilterDictionaryBlock) block {
+- filter:(BoolDictionaryBlock) block {
     return [F filterDictionary:self withBlock:block];
+}
+
+- (NSDictionary*) reject:(BoolDictionaryBlock) block {
+    return [F rejectDictionary:self withBlock:block];
+}
+
+- (BOOL) isValidForAll:(BoolDictionaryBlock) block {
+    return [F allInDictionary:self withBlock:block];
+}
+
+- (BOOL) isValidForAny:(BoolDictionaryBlock) block {
+    return [F anyInDictionary:self withBlock:block];
+}
+
+- (NSObject *) max:(CompareDictBlock) block {
+    return [F maxDict:self withBlock:block];
+}
+
+- (NSObject *) min:(CompareDictBlock) block {
+    return [F minDict:self withBlock:block];
 }
 @end
