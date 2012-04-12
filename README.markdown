@@ -108,3 +108,33 @@ This example gives you all even (filter) or odd (reject) numbers in the array / 
     NSLog(@"Filter(Dictionary) returned %@", filteredDict);
     NSLog(@"Reject(Dictionary) returned %@", rejectedDict);    
 ```
+
+##isValidForAll and isValidForAny
+
+`isValidForAll` returns YES if the iterator returns YES for all elements in the collection. `isValidForAny` returns YES if the iterator returns YES for at least one object in the collection.
+
+- `- (BOOL) isValidForAll:(BoolArrayBlock) block;`
+- `- (BOOL) isValidForAny:(BoolArrayBlock) block;`
+
+- `- (BOOL) isValidForAll:(BoolDictionaryBlock) block;`
+- `- (BOOL) isValidForAny:(BoolDictionaryBlock) block;`
+
+This example checks if all or any elements in the collection are even numbers
+
+```objc
+	BoolArrayBlock isEvenArrayBlock = ^BOOL (NSObject *obj) {
+        return (([((NSNumber *) obj) intValue] % 2) == 0);
+    };
+    BOOL allEvenInArray = [arr isValidForAll:isEvenArrayBlock];    
+    BOOL someEvenInArray = [arr isValidForAny:isEvenArrayBlock];
+    NSLog(@"Only even numbers in array : %d - some even numbers in array %d", allEvenInArray, someEvenInArray);
+
+
+    BoolDictionaryBlock isEvenDictBlock = ^BOOL (NSObject *key, NSObject *value) {
+        return (([((NSNumber *) value) intValue] % 2) == 0);
+    };
+    BOOL allEvenInDictionary = [dict isValidForAll:isEvenDictBlock];    
+    BOOL someEvenInDictionary = [dict isValidForAny:isEvenDictBlock];
+    NSLog(@"Only even numbers in dictionary : %d - some even numbers in dictionary %d", allEvenInDictionary, someEvenInDictionary);
+
+```
