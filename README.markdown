@@ -207,3 +207,24 @@ Here's a simple example:
         NSLog(@"I do this 5 times");
     }];
 ```
+
+##NSArray additions
+
+###arrayFrom:To:
+
+Creates an array, that contains the range as individual NSNumbers
+
+- `+ (NSArray *) arrayFrom:(NSInteger) from To:(NSInteger) to;`
+
+Example:
+
+```objc
+	NSArray *rArr = [NSArray arrayFrom:0 To:3];
+    NSLog(@"Array from 0 to 3 %@", rArr);
+```
+
+###first
+
+- `- (NSObject *) first;`
+
+Just a shortcut for [array objectAtIndex:0];

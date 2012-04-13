@@ -23,4 +23,5 @@
     - (NSDictionary *) group:(MapArrayBlock) block;
 
     - (NSObject *) first;
+    + (NSArray *) arrayFrom:(NSInteger) from To:(NSInteger) to;
 @end

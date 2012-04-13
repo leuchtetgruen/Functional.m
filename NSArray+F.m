@@ -60,4 +60,12 @@
     return [self objectAtIndex:0];
 }
 
++ (NSArray *) arrayFrom:(NSInteger) from To:(NSInteger) to {
+    NSMutableArray *mutArr = [NSMutableArray array];
+    for (NSInteger i=from; i <= to; i++) {
+        [mutArr addObject:[NSNumber numberWithInteger:i]];
+    }
+    return [NSArray arrayWithArray:mutArr];
+}
+
 @end
