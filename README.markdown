@@ -6,6 +6,8 @@ Here's the documentation for the individual functions:
 
 The arr NSArray contains a collection of NSNumbers, The dict NSDictionary contains the same collection - the keys are the names of the numbers
 
+__This version of the documentation still uses `NSObject*`, however you can assume every `NSObject*` is actually an `id` so you dont need to convert__
+
 ##each
 
 The given iterator runs for each object in the collection.
