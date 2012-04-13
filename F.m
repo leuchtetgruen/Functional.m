@@ -119,22 +119,22 @@
     return validForAny;    
 }
 
-+ (NSObject *) maxArray:(NSArray *) arr withBlock:(CompareArrayBlock) block {
++ (id) maxArray:(NSArray *) arr withBlock:(CompareArrayBlock) block {
     if ([arr count]<1) return NULL;
     
-    NSObject *biggest = [arr objectAtIndex:0];
-    for (NSObject *obj in arr) {
+    id biggest = [arr objectAtIndex:0];
+    for (id obj in arr) {
         if (block(biggest, obj) == NSOrderedAscending) biggest = obj;
     }
     return biggest;
 }
 
-+ (NSObject *) maxDict:(NSDictionary *) dict withBlock:(CompareDictBlock) block {
++ (id) maxDict:(NSDictionary *) dict withBlock:(CompareDictBlock) block {
     if ([dict count] < 1) return NULL;
     
-    NSObject *biggest = NULL;
-    NSString *biggestKey = @"";
-    for (NSString *key in dict) {
+    id biggest = NULL;
+    id biggestKey = @"";
+    for (id key in dict) {
         if (biggest == NULL) {
             biggest = [dict objectForKey:key];
             biggestKey = key;
@@ -147,22 +147,22 @@
     return biggest;
 }
 
-+ (NSObject *) minArray:(NSArray *) arr withBlock:(CompareArrayBlock) block {
++ (id) minArray:(NSArray *) arr withBlock:(CompareArrayBlock) block {
     if ([arr count]<1) return NULL;
     
-    NSObject *smallest = [arr objectAtIndex:0];
-    for (NSObject *obj in arr) {
+    id smallest = [arr objectAtIndex:0];
+    for (id obj in arr) {
         if (block(smallest, obj) == NSOrderedDescending) smallest = obj;
     }
     return smallest;
 }
 
-+ (NSObject *) minDict:(NSDictionary *) dict withBlock:(CompareDictBlock) block {
++ (id) minDict:(NSDictionary *) dict withBlock:(CompareDictBlock) block {
     if ([dict count] < 1) return NULL;
     
-    NSObject *smallest = NULL;
-    NSString *smallestKey = @"";
-    for (NSString *key in dict) {
+    id smallest = NULL;
+    id smallestKey = @"";
+    for (id key in dict) {
         if (smallest == NULL) {
             smallest = [dict objectForKey:key];
             smallestKey = key;
@@ -177,8 +177,8 @@
 
 + (NSDictionary *) groupArray:(NSArray *) arr withBlock:(MapArrayBlock) block {
     NSMutableDictionary *mutDictOfMutArrays = [NSMutableDictionary dictionary];
-    for (NSObject *obj in arr) {
-        NSObject *transformed = block(obj);
+    for (id obj in arr) {
+        id transformed = block(obj);
         if ([mutDictOfMutArrays objectForKey:transformed]==nil) {
             [mutDictOfMutArrays setObject:[NSMutableArray array] forKey:transformed];
         }
@@ -187,7 +187,7 @@
     }
     
     NSMutableDictionary *mutDictOfArrays = [NSMutableDictionary dictionary];
-    for (NSObject *key in mutDictOfMutArrays) {
+    for (id key in mutDictOfMutArrays) {
         
         NSMutableArray *mutArr = (NSMutableArray *) [mutDictOfMutArrays objectForKey:key];
         [mutDictOfArrays setObject:[NSArray arrayWithArray:mutArr] forKey:key];

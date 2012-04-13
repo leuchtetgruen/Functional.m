@@ -18,7 +18,7 @@
     return [F mapArray:self withBlock:block];
 }
 
-- (NSObject *) reduce:(ReduceArrayBlock) block withInitialMemo:(NSObject *) memo {
+- (id) reduce:(ReduceArrayBlock) block withInitialMemo:(id) memo {
     return [F reduceArray:self withBlock:block andInitialMemo:memo];
 }
 
@@ -38,11 +38,11 @@
     return [F anyInArray:self withBlock:block];
 }
 
-- (NSObject *) max:(CompareArrayBlock) block {
+- (id) max:(CompareArrayBlock) block {
     return [F maxArray:self withBlock:block];
 }
 
-- (NSObject *) min:(CompareArrayBlock) block {
+- (id) min:(CompareArrayBlock) block {
     return [F minArray:self withBlock:block];
 }
 
@@ -56,7 +56,7 @@
 }
 
 // Just a helper method
-- (NSObject *) first {
+- (id) first {
     return [self objectAtIndex:0];
 }
 

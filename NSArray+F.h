@@ -12,16 +12,16 @@
 @interface NSArray(F)
     - (void) each:(VoidIteratorArrayBlock) block;
     - (NSArray *) map:(MapArrayBlock) block;
-    - (NSObject *) reduce:(ReduceArrayBlock) block withInitialMemo:(NSObject *) memo;
+    - (id) reduce:(ReduceArrayBlock) block withInitialMemo:(id) memo;
     - (NSArray *) filter:(BoolArrayBlock) block;
     - (NSArray *) reject:(BoolArrayBlock) block;
     - (BOOL) isValidForAll:(BoolArrayBlock) block;
     - (BOOL) isValidForAny:(BoolArrayBlock) block;
-    - (NSObject *) max:(CompareArrayBlock) block;
-    - (NSObject *) min:(CompareArrayBlock) block;
+    - (id) max:(CompareArrayBlock) block;
+    - (id) min:(CompareArrayBlock) block;
     - (NSArray *) sort:(NSComparator) block;
     - (NSDictionary *) group:(MapArrayBlock) block;
 
-    - (NSObject *) first;
+    - (id) first;
     + (NSArray *) arrayFrom:(NSInteger) from To:(NSInteger) to;
 @end

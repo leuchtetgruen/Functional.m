@@ -8,20 +8,20 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void (^VoidIteratorArrayBlock)(NSObject *obj);
-typedef void (^VoidIteratorDictBlock)(NSObject *key, NSObject *value);
+typedef void (^VoidIteratorArrayBlock)(id obj);
+typedef void (^VoidIteratorDictBlock)(id key, id value);
 
-typedef NSObject* (^MapArrayBlock)(NSObject *obj);
-typedef NSObject* (^MapDictBlock)(NSObject *key, NSObject *obj);
+typedef id (^MapArrayBlock)(id obj);
+typedef id (^MapDictBlock)(id key, id obj);
 
-typedef NSObject* (^ReduceArrayBlock)(NSObject *memo, NSObject *obj);
-typedef NSObject* (^ReduceDictBlock)(NSObject *memo, NSObject *key, NSObject *value);
+typedef id (^ReduceArrayBlock)(id memo, id obj);
+typedef id (^ReduceDictBlock)(id memo, id key, id value);
 
-typedef BOOL (^BoolArrayBlock)(NSObject *obj);
-typedef BOOL (^BoolDictionaryBlock)(NSObject *key, NSObject *value);
+typedef BOOL (^BoolArrayBlock)(id obj);
+typedef BOOL (^BoolDictionaryBlock)(id key, id value);
 
-typedef NSComparisonResult (^CompareArrayBlock) (NSObject *a, NSObject *b);
-typedef NSComparisonResult (^CompareDictBlock) (NSObject *k1, NSObject *v1 , NSObject *k2, NSObject *v2);
+typedef NSComparisonResult (^CompareArrayBlock) (id a, id b);
+typedef NSComparisonResult (^CompareDictBlock) (id k1, id v1 , id k2, id v2);
 
 typedef void (^VoidBlock) ();
 
@@ -34,8 +34,8 @@ typedef void (^VoidBlock) ();
     + (NSArray *) mapArray:(NSArray *) arr withBlock:(MapArrayBlock) block;
     + (NSDictionary *) mapDict:(NSDictionary *) dict withBlock:(MapDictBlock) block;
 
-    + (NSObject *) reduceArray:(NSArray *) arr withBlock:(ReduceArrayBlock) block andInitialMemo:(NSObject *) memo;
-    + (NSObject *) reduceDictionary:(NSDictionary *) dict withBlock:(ReduceDictBlock) block andInitialMemo:(NSObject *) memo; 
+    + (NSObject *) reduceArray:(NSArray *) arr withBlock:(ReduceArrayBlock) block andInitialMemo:(id) memo;
+    + (NSObject *) reduceDictionary:(NSDictionary *) dict withBlock:(ReduceDictBlock) block andInitialMemo:(id) memo; 
 
     + (NSArray *) filterArray:(NSArray *) arr withBlock:(BoolArrayBlock) block;
     + (NSDictionary *) filterDictionary:(NSDictionary *) dict withBlock:(BoolDictionaryBlock) block;

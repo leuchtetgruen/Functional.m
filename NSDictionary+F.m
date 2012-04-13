@@ -18,7 +18,7 @@
     return [F mapDict:self withBlock:block];
 }
 
-- (NSObject *) reduce:(ReduceDictBlock) block withInitialMemo:(NSObject *) memo {
+- (id) reduce:(ReduceDictBlock) block withInitialMemo:(id) memo {
     return [F reduceDictionary:self withBlock:block andInitialMemo:memo];
 }
 
@@ -38,11 +38,11 @@
     return [F anyInDictionary:self withBlock:block];
 }
 
-- (NSObject *) max:(CompareDictBlock) block {
+- (id) max:(CompareDictBlock) block {
     return [F maxDict:self withBlock:block];
 }
 
-- (NSObject *) min:(CompareDictBlock) block {
+- (id) min:(CompareDictBlock) block {
     return [F minDict:self withBlock:block];
 }
 @end

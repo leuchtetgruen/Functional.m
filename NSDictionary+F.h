@@ -12,11 +12,11 @@
 @interface NSDictionary(F)
     - (void) each:(VoidIteratorDictBlock) block;
     - (NSDictionary *) map:(MapDictBlock) block;
-    - (NSObject *) reduce:(ReduceDictBlock) block withInitialMemo:(NSObject *) memo;
+    - (id) reduce:(ReduceDictBlock) block withInitialMemo:(id) memo;
     - (NSDictionary*) filter:(BoolDictionaryBlock) block;
     - (NSDictionary*) reject:(BoolDictionaryBlock) block;
     - (BOOL) isValidForAll:(BoolDictionaryBlock) block;
     - (BOOL) isValidForAny:(BoolDictionaryBlock) block;
-    - (NSObject *) max:(CompareDictBlock) block;
-    - (NSObject *) min:(CompareDictBlock) block;
+    - (id) max:(CompareDictBlock) block;
+    - (id) min:(CompareDictBlock) block;
 @end
