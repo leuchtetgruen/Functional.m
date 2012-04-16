@@ -4,9 +4,13 @@ Functional.m is an extension for objective-c, that can be used to do functional 
 
 Here's the documentation for the individual functions:
 
-The arr NSArray contains a collection of NSNumbers, The dict NSDictionary contains the same collection - the keys are the names of the numbers
+The numberArray NSArray contains a collection of NSNumbers, The dict NSDictionary contains the same collection - the keys are the names of the numbers
 
-__This version of the documentation still uses `NSObject*`, however you can assume every `NSObject*` is actually an `id` so you dont need to convert__
+```objc
+    NSArray *numberArray = [NSArray arrayFrom:1 To:5];
+    NSArray *numberNamesArray = [NSArray arrayWithObjects:@"one", @"two", @"three", @"four", @"five", nil];
+    NSDictionary *numberDict = [NSDictionary dictionaryWithObjects:numberArray forKeys:numberNamesArray];
+```
 
 ##each
 
@@ -18,14 +22,12 @@ The given iterator runs for each object in the collection.
 Example:
 
 ```objc
-	// Array each
-    [arr each:^(NSObject *obj) {
-        NSLog(@"Object %@", obj);
+    [numberArray each:^(id obj) {
+        NSLog(@"Current Object : %@", obj);
     }];
     
-    // Dict each
-    [dict each:^(NSObject *key, NSObject *value) {
-        NSLog(@"Key %@ Val %@", key, value);
+    [numberDict each:^(id key, id value) {
+        NSLog(@"%@ => %@", key, value);
     }];
 ```
 
@@ -39,42 +41,37 @@ Each object in the collection can be transformed in the iterator.
 Example:
 
 ```objc
-	// Map array
-    NSArray *doubleArr = [arr map:^NSObject *(NSObject *obj) {
-        return [NSNumber numberWithInt:([((NSNumber *) obj) intValue] * 2)];
+    NSArray *doubleArray = [numberArray map:^NSNumber*(NSNumber *obj) {
+        return [NSNumber numberWithInt:([obj intValue]*2)];
     }];
-    NSLog(@"The Double array is : %@", doubleArr);
+    NSDictionary *doubleDict = [numberDict map:^NSNumber*(id key, NSNumber *obj) {
+        return [NSNumber numberWithInt:([obj intValue]*2)];
+    }];
     
-    // Map dict
-    NSDictionary *doubleDict = [dict map:^NSObject *(NSObject *key, NSObject *obj) {
-        return [NSNumber numberWithInt:([((NSNumber *) obj) intValue] * 2)];
-    }];
-    NSLog(@"Double Dict %@", doubleDict);
+    NSLog(@"Double : Array %@ - Dict %@", doubleArray, doubleDict);
 ```
 
 ##reduce
 
 Reduces all objects in the collection to a single value (something like computing the average etc.)
 
-- `- (NSObject *) reduce:(ReduceArrayBlock) block withInitialMemo:(NSObject *) memo;`
-- `- (NSObject *) reduce:(ReduceDictBlock) block withInitialMemo:(NSObject *) memo;`
+- `- (NSObject *) reduce:(ReduceArrayBlock) block withInitialMemo:(id) memo;`
+- `- (NSObject *) reduce:(ReduceDictBlock) block withInitialMemo:(id) memo;`
 
 Example - adds all NSNumbers in the array or dictionary.
 
 ```objc 
-	//Array reduce
     NSNumber *memo = [NSNumber numberWithInt:0];
-    NSNumber *reducedArr = (NSNumber *) [arr reduce:^NSObject *(NSObject *memo, NSObject *obj) {
-        return [NSNumber numberWithInt:([((NSNumber *) memo) intValue]) + ([((NSNumber *) obj) intValue])];
+    
+    NSNumber *sumArray = [numberArray reduce:^NSNumber*(NSNumber *memo, NSNumber *cur) {
+        return [NSNumber numberWithInt:([memo intValue] + [cur intValue])];
     } withInitialMemo:memo];
     
-    NSLog(@"Reduced Array : %@", reducedArr);
-    
-    //Dict reduce
-    NSNumber *reducedDict = (NSNumber *) [dict reduce:^NSObject *(NSObject *memo, NSObject *key, NSObject *value) {
-        return [NSNumber numberWithInt:([((NSNumber *) memo) intValue]) + ([((NSNumber *) value) intValue])];
+    NSNumber *sumDict = [numberDict reduce:^NSNumber*(NSNumber *memo, id key, NSNumber *cur) {
+        return [NSNumber numberWithInt:([memo intValue] + [cur intValue])];
     } withInitialMemo:memo];
-    NSLog(@"Reduced Dict : %@", reducedDict);
+    
+    NSLog(@"Sum : Array %@ - Dict %@", sumArray, sumDict);
 ```
 
 ##filter and reject
@@ -90,25 +87,21 @@ Example - adds all NSNumbers in the array or dictionary.
 This example gives you all even (filter) or odd (reject) numbers in the array / dict:
 
 ```objc
-	BoolArrayBlock isEvenArrayBlock = ^BOOL (NSObject *obj) {
-        return (([((NSNumber *) obj) intValue] % 2) == 0);
-    };
-    NSArray *filteredArr = [arr filter:isEvenArrayBlock];
-    NSArray *rejectedArr = [arr reject:isEvenArrayBlock];
+        BoolArrayBlock isEvenArrayBlock = ^BOOL(NSNumber *obj) {
+            return (([obj intValue] % 2) == 0);
+        };
+        BoolDictionaryBlock isEvenDictBlock = ^BOOL(id key, NSNumber *obj) {
+            return (([obj intValue] % 2) == 0);
+        };
     
-    NSLog(@"Filter(Array) returned %@", filteredArr);
-    NSLog(@"Array with only odd numbers %@", rejectedArr);
-
-
-    BoolDictionaryBlock isEvenDictBlock = ^BOOL (NSObject *key, NSObject *value) {
-        return (([((NSNumber *) value) intValue] % 2) == 0);
-    };
+        NSArray *evenArr    = [numberArray filter:isEvenArrayBlock];
+        NSDictionary *evenDict   = [numberDict filter:isEvenDictBlock];
+        NSLog(@"The following elements are even : Array %@ - Dict %@", evenArr, evenDict);
     
-    NSDictionary *filteredDict = [dict filter:isEvenDictBlock];
-    NSDictionary *rejectedDict = [dict reject:isEvenDictBlock];
-
-    NSLog(@"Filter(Dictionary) returned %@", filteredDict);
-    NSLog(@"Reject(Dictionary) returned %@", rejectedDict);    
+    #pragma mark - reject
+        NSArray *oddArr = [numberArray reject:isEvenArrayBlock];
+        NSDictionary *oddDict = [numberDict reject:isEvenDictBlock];
+        NSLog(@"The following elements are odd : Array %@ - Dict %@", oddArr, oddDict);   
 ```
 
 ##isValidForAll and isValidForAny
@@ -124,23 +117,18 @@ This example gives you all even (filter) or odd (reject) numbers in the array / 
 This example checks if all or any elements in the collection are even numbers
 
 ```objc
-	BoolArrayBlock isEvenArrayBlock = ^BOOL (NSObject *obj) {
-        return (([((NSNumber *) obj) intValue] % 2) == 0);
+    BoolArrayBlock isEvenArrayBlock = ^BOOL(NSNumber *obj) {
+        return (([obj intValue] % 2) == 0);
     };
-    BOOL allEvenInArray = [arr isValidForAll:isEvenArrayBlock];    
-    BOOL someEvenInArray = [arr isValidForAny:isEvenArrayBlock];
-    NSLog(@"Only even numbers in array : %d - some even numbers in array %d", allEvenInArray, someEvenInArray);
-
-
-    BoolDictionaryBlock isEvenDictBlock = ^BOOL (NSObject *key, NSObject *value) {
-        return (([((NSNumber *) value) intValue] % 2) == 0);
+    BoolDictionaryBlock isEvenDictBlock = ^BOOL(id key, NSNumber *obj) {
+        return (([obj intValue] % 2) == 0);
     };
-    BOOL allEvenInDictionary = [dict isValidForAll:isEvenDictBlock];    
-    BOOL someEvenInDictionary = [dict isValidForAny:isEvenDictBlock];
-    NSLog(@"Only even numbers in dictionary : %d - some even numbers in dictionary %d", allEvenInDictionary, someEvenInDictionary);
+
+    NSLog(@"Only even numbers : Array %d - Dict %d", [numberArray isValidForAll:isEvenArrayBlock], [numberDict isValidForAll:isEvenDictBlock]);
+    # pragma mark - isValidForAny
+    NSLog(@"Any even numbers : Array %d - Dict %d", [numberArray isValidForAny:isEvenArrayBlock], [numberDict isValidForAny:isEvenDictBlock]);
 
 ```
-
 ##countValidEntries
 
 Counts the number of entries in a set, for which the given block returns true:
@@ -149,11 +137,18 @@ Counts the number of entries in a set, for which the given block returns true:
 - `- (NSNumber *) countValidEntries:(BoolDictionaryBlock) block;`
 
 ```objc
-    NSNumber *nrEvenArrEntries = [arr countValidEntries:^BOOL (NSObject *obj) {
-        return (([((NSNumber *) obj) intValue] % 2) == 0);
-    }];
-    NSLog(@"Even elements in array : %@", nrEvenArrEntries);
+    BoolArrayBlock isEvenArrayBlock = ^BOOL(NSNumber *obj) {
+        return (([obj intValue] % 2) == 0);
+    };
+    BoolDictionaryBlock isEvenDictBlock = ^BOOL(id key, NSNumber *obj) {
+        return (([obj intValue] % 2) == 0);
+    };
+
+    NSNumber *ctEvenArr     = [numberArray countValidEntries:isEvenArrayBlock];
+    NSNumber *ctEvenDict    = [numberDict countValidEntries:isEvenDictBlock];
+    NSLog(@"The number of even elements are : Array %@ - Dict %@", ctEvenArr, ctEvenDict);
 ```
+
 
 ##max and min
 
@@ -168,22 +163,22 @@ Return the maximum and the minimum values in a collection. You will have to writ
 Here's an example that gets the minimum and the maximum value from the array and dict described above:
 
 ```objc
-    CompareArrayBlock arrCompare = ^NSComparisonResult(NSObject *a, NSObject *b) {
-        return [(NSNumber *) a compare:(NSNumber *) b];
-    };
+        CompareArrayBlock compareArrBlock = ^NSComparisonResult(NSNumber *a, NSNumber *b) {
+            return [a compare:b];
+        };
     
-    CompareDictBlock dictCompare = ^NSComparisonResult(NSObject *k1, NSObject *v1, NSObject *k2, NSObject *v2) {
-        return [(NSNumber *) v1 compare:(NSNumber *) v2];
-    };
+        CompareDictBlock compareDictBlock = ^NSComparisonResult(id k1, NSNumber *v1, id k2, NSNumber *v2) {
+            return [v1 compare:v2];
+        };
     
-    NSNumber *maxInArray = (NSNumber *) [arr max:arrCompare];
-    NSNumber *minInArray = (NSNumber *) [arr min:arrCompare];
+        NSNumber *maxArr    = [numberArray max:compareArrBlock];
+        NSNumber *maxDict   = [numberDict max:compareDictBlock];
+        NSLog(@"Max : Array %@ - Dict %@", maxArr, maxDict);
     
-    NSNumber *maxInDict = (NSNumber *) [dict max:dictCompare];
-    NSNumber *minInDict = (NSNumber *) [dict min:dictCompare];
-    
-    NSLog(@"Max in Array %@ - Min %@", maxInArray, minInArray);
-    NSLog(@"Max in Dict %@ - Min %@", maxInDict, minInDict);
+    #pragma mark - min
+        NSNumber *minArr    = [numberArray min:compareArrBlock];
+        NSNumber *minDict   = [numberDict min:compareDictBlock];
+        NSLog(@"Min : Array %@ - Dict %@", minArr, minDict);
 ```
 
 ##sort
@@ -203,8 +198,8 @@ Groups an array by the values returned by the iterator.
 Here's an example that groups an array into an odd numbers section and an even numbers section:
 
 ```objc
-	NSDictionary *oddEvenArray = [arr group:^NSObject *(NSObject *obj) {
-        if (([(NSNumber *) obj intValue] % 2) == 0) return @"even";
+	NSDictionary *oddEvenArray = [numberArray group:^NSString *(NSNumber *obj) {
+        if (([obj intValue] % 2) == 0) return @"even";
         else return @"odd";
     }];
 	NSLog(@"Grouped array %@", oddEvenArray);
@@ -216,11 +211,12 @@ Call times on an `NSNumber` (n) to iterate n times over the given block.
 
 - `- (void) times:(VoidBlock) block;`
 
-Here's a simple example:
+Here's a simple example - it prints 'have i told you' once:
 
 ```objc
-	[[NSNumber numberWithInt:5] times:^{
-        NSLog(@"I do this 5 times");
+    NSNumber *howMany   = [numberArray first];
+    [howMany times:^{
+        NSLog(@"have i told you?");
     }];
 ```
 
@@ -244,3 +240,9 @@ Example:
 - `- (NSObject *) first;`
 
 Just a shortcut for [array objectAtIndex:0];
+
+###reverse
+
+- `- (NSArray *) reverse;`
+
+Returns the reversed array
