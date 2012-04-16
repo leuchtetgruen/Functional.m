@@ -239,7 +239,7 @@ Example:
 
 - `- (id) first;`
 
-Just a shortcut for [array objectAtIndex:0];
+Just a shortcut for `[array objectAtIndex:0]`;
 
 ###reverse
 
