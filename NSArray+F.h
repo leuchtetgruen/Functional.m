@@ -25,5 +25,7 @@
     - (NSDictionary *) group:(MapArrayBlock) block;
 
     - (id) first;
+    - (NSArray *) reverse;
+
     + (NSArray *) arrayFrom:(NSInteger) from To:(NSInteger) to;
 @end

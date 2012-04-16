@@ -64,6 +64,11 @@
     return [self objectAtIndex:0];
 }
 
+// Just a helper method
+- (NSArray *) reverse {
+    return [[self reverseObjectEnumerator] allObjects];
+}
+
 + (NSArray *) arrayFrom:(NSInteger) from To:(NSInteger) to {
     NSMutableArray *mutArr = [NSMutableArray array];
     for (NSInteger i=from; i <= to; i++) {
