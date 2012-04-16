@@ -17,6 +17,8 @@
     - (NSArray *) reject:(BoolArrayBlock) block;
     - (BOOL) isValidForAll:(BoolArrayBlock) block;
     - (BOOL) isValidForAny:(BoolArrayBlock) block;
+    - (NSNumber *) countValidEntries:(BoolArrayBlock) block;
+
     - (id) max:(CompareArrayBlock) block;
     - (id) min:(CompareArrayBlock) block;
     - (NSArray *) sort:(NSComparator) block;

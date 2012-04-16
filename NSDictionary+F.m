@@ -38,6 +38,10 @@
     return [F anyInDictionary:self withBlock:block];
 }
 
+- (NSNumber *) countValidEntries:(BoolDictionaryBlock) block {
+    return [F countInDictionary:self withBlock:block];
+}
+
 - (id) max:(CompareDictBlock) block {
     return [F maxDict:self withBlock:block];
 }

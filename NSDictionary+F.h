@@ -17,6 +17,7 @@
     - (NSDictionary*) reject:(BoolDictionaryBlock) block;
     - (BOOL) isValidForAll:(BoolDictionaryBlock) block;
     - (BOOL) isValidForAny:(BoolDictionaryBlock) block;
+    - (NSNumber *) countValidEntries:(BoolDictionaryBlock) block;
     - (id) max:(CompareDictBlock) block;
     - (id) min:(CompareDictBlock) block;
 @end

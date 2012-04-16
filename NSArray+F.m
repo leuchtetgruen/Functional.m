@@ -38,6 +38,10 @@
     return [F anyInArray:self withBlock:block];
 }
 
+- (NSNumber *) countValidEntries:(BoolArrayBlock) block {
+    return [F countInArray:self withBlock:block];
+}
+
 - (id) max:(CompareArrayBlock) block {
     return [F maxArray:self withBlock:block];
 }

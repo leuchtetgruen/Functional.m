@@ -123,6 +123,23 @@
     return validForAny;    
 }
 
++ (NSNumber *) countInArray:(NSArray *) arr withBlock:(BoolArrayBlock) block {
+    NSInteger ctr = 0;
+    for (id obj in arr) {
+        if(block(obj)) ctr++;
+    }
+    return [NSNumber numberWithInt:ctr];
+}
+
++ (NSNumber *) countInDictionary:(NSDictionary *) dict withBlock:(BoolDictionaryBlock) block {
+    NSInteger ctr = 0;
+    for (id key in dict) {
+        if (block(key, [dict objectForKey:key])) ctr++;
+    }
+    return [NSNumber numberWithInt:ctr];
+}
+
+
 
 + (id) maxArray:(NSArray *) arr withBlock:(CompareArrayBlock) block {
     if ([arr count]<1) return NULL;

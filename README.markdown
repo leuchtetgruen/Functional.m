@@ -141,6 +141,20 @@ This example checks if all or any elements in the collection are even numbers
 
 ```
 
+##countValidEntries
+
+Counts the number of entries in a set, for which the given block returns true:
+
+- `- (NSNumber *) countValidEntries:(BoolArrayBlock) block;`
+- `- (NSNumber *) countValidEntries:(BoolDictionaryBlock) block;`
+
+```objc
+    NSNumber *nrEvenArrEntries = [arr countValidEntries:^BOOL (NSObject *obj) {
+        return (([((NSNumber *) obj) intValue] % 2) == 0);
+    }];
+    NSLog(@"Even elements in array : %@", nrEvenArrEntries);
+```
+
 ##max and min
 
 Return the maximum and the minimum values in a collection. You will have to write a comperator, which compares two elements.

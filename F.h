@@ -49,6 +49,9 @@ typedef void (^VoidBlock) ();
     + (BOOL) anyInArray:(NSArray *) arr withBlock:(BoolArrayBlock) block;
     + (BOOL) anyInDictionary:(NSDictionary *) dict withBlock:(BoolDictionaryBlock) block;
 
+    + (NSNumber *) countInArray:(NSArray *) arr withBlock:(BoolArrayBlock) block;
+    + (NSNumber *) countInDictionary:(NSDictionary *) dict withBlock:(BoolDictionaryBlock) block;
+
     + (NSObject *) maxArray:(NSArray *) arr withBlock:(CompareArrayBlock) block;
     + (NSObject *) maxDict:(NSDictionary *) dict withBlock:(CompareDictBlock) block;
     + (NSObject *) minArray:(NSArray *) arr withBlock:(CompareArrayBlock) block;
