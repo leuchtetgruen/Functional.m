@@ -189,6 +189,18 @@ Sort is actually just an alias for `[self sortedArrayUsingComparator:block];`
 
 See [NSArray sortedArrayUsingComperator:](http://developer.apple.com/library/ios/DOCUMENTATION/Cocoa/Reference/Foundation/Classes/NSArray_Class/NSArray.html#//apple_ref/occ/instm/NSArray/sortedArrayUsingComparator:) for reference.
 
+Here's an example:
+
+```objc
+    NSComperator compareArrBlock = ^NSComparisonResult(NSNumber *a, NSNumber *b) {
+        return [a compare:b];
+    };
+
+    NSArray *nrReversed = [numberArray reverse];
+    NSArray *sorted     = [nrReversed sort:compareArrBlock];
+    NSLog(@"%@ becomes %@ when sorted", nrReversed, sorted);
+```
+
 ##group
 
 Groups an array by the values returned by the iterator.
