@@ -18,14 +18,14 @@
 
 + (void) eachInDict:(NSDictionary *) dict withBlock:(VoidIteratorDictBlock) block {
     [dict enumerateKeysAndObjectsUsingBlock:^(__strong id key, __strong id obj, BOOL *stop) {
-        block((NSString *) key, obj);
+        block(key, obj);
     }];
 }
 
 
 + (NSArray *) mapArray:(NSArray *) arr withBlock:(MapArrayBlock) block {
     NSMutableArray *mutArr = [NSMutableArray array];
-    for (NSObject *obj in arr) {
+    for (id obj in arr) {
         [mutArr addObject:block(obj)];
     }
     return [NSArray arrayWithArray:mutArr];    
@@ -33,23 +33,23 @@
 
 + (NSDictionary *) mapDict:(NSDictionary *) dict withBlock:(MapDictBlock) block {
     NSMutableDictionary *mutDict = [NSMutableDictionary dictionary];
-    for (NSString *key in dict) {
-        NSObject *obj = [dict objectForKey:key];
+    for (id key in dict) {
+        id obj = [dict objectForKey:key];
         [mutDict setValue:block(key, obj) forKey:key];
     }
     return [NSDictionary dictionaryWithDictionary:mutDict];
 }
 
 + (NSObject *) reduceArray:(NSArray *) arr withBlock:(ReduceArrayBlock) block andInitialMemo:(NSObject *) memo {
-    for (NSObject *obj in arr) {
+    for (id obj in arr) {
         memo = block(memo, obj);
     }
     return memo;
 }
 
 + (NSObject *) reduceDictionary:(NSDictionary *) dict withBlock:(ReduceDictBlock) block andInitialMemo:(NSObject *) memo {
-    for (NSString *key in dict) {
-        NSObject *obj = [dict objectForKey:key];
+    for (id key in dict) {
+        id obj = [dict objectForKey:key];
         memo = block(memo, key, obj);
     }
     return memo;
@@ -57,7 +57,7 @@
 
 + (NSArray *) filterArray:(NSArray *) arr withBlock:(BoolArrayBlock) block {
     NSMutableArray *mutArr = [NSMutableArray array];
-    for (NSObject *obj in arr) {
+    for (id obj in arr) {
         if (block(obj)) [mutArr addObject:obj];
     }
     return [NSArray arrayWithArray:mutArr];
@@ -65,7 +65,7 @@
 
 + (NSDictionary *) filterDictionary:(NSDictionary *) dict withBlock:(BoolDictionaryBlock) block {
     NSMutableDictionary *mutDict = [NSMutableDictionary dictionary];
-    for (NSString *key in dict) {
+    for (id key in dict) {
         if (block(key, [dict objectForKey:key])) [mutDict setObject:[dict objectForKey:key]  forKey:key];
     }
     return [NSDictionary dictionaryWithDictionary:mutDict];
@@ -73,7 +73,7 @@
 
 + (NSArray *) rejectArray:(NSArray *) arr withBlock:(BoolArrayBlock) block {
     NSMutableArray *mutArr = [NSMutableArray array];
-    for (NSObject *obj in arr) {
+    for (id obj in arr) {
         if (!block(obj)) [mutArr addObject:obj];
     }
     return [NSArray arrayWithArray:mutArr];
@@ -81,7 +81,7 @@
 
 + (NSDictionary *) rejectDictionary:(NSDictionary *) dict withBlock:(BoolDictionaryBlock) block {
     NSMutableDictionary *mutDict = [NSMutableDictionary dictionary];
-    for (NSString *key in dict) {
+    for (id key in dict) {
         if (!block(key, [dict objectForKey:key])) [mutDict setObject:[dict objectForKey:key]  forKey:key];
     }
     return [NSDictionary dictionaryWithDictionary:mutDict];
@@ -89,35 +89,40 @@
 
 + (BOOL) allInArray:(NSArray *) arr withBlock:(BoolArrayBlock) block {
     BOOL validForAll = true;
-    for (NSObject *obj in arr) {
+    for (id obj in arr) {
         validForAll = (validForAll && block(obj));
+        if (!validForAll) break;
     }
     return validForAll;
 }
 
 + (BOOL) allInDictionary:(NSDictionary *) dict withBlock:(BoolDictionaryBlock) block {
     BOOL validForAll = true;
-    for (NSString *key in dict) {
+    for (id key in dict) {
         validForAll = (validForAll && block(key, [dict objectForKey:key]));
+        if (!validForAll) break;
     }
     return validForAll;
 }
 
 + (BOOL) anyInArray:(NSArray *) arr withBlock:(BoolArrayBlock) block {
     BOOL validForAny = false;
-    for (NSObject *obj in arr) {
+    for (id obj in arr) {
         validForAny = (validForAny || block(obj));
+        if (validForAny) break;
     }
     return validForAny;
 }
 
 + (BOOL) anyInDictionary:(NSDictionary *) dict withBlock:(BoolDictionaryBlock) block {
     BOOL validForAny = false;
-    for (NSString *key in dict) {
+    for (id key in dict) {
         validForAny = (validForAny || block(key, [dict objectForKey:key]));
+        if (validForAny) break;
     }
     return validForAny;    
 }
+
 
 + (id) maxArray:(NSArray *) arr withBlock:(CompareArrayBlock) block {
     if ([arr count]<1) return NULL;
