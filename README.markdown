@@ -55,8 +55,8 @@ Example:
 
 Reduces all objects in the collection to a single value (something like computing the average etc.)
 
-- `- (NSObject *) reduce:(ReduceArrayBlock) block withInitialMemo:(id) memo;`
-- `- (NSObject *) reduce:(ReduceDictBlock) block withInitialMemo:(id) memo;`
+- `- (id) reduce:(ReduceArrayBlock) block withInitialMemo:(id) memo;`
+- `- (id) reduce:(ReduceDictBlock) block withInitialMemo:(id) memo;`
 
 Example - adds all NSNumbers in the array or dictionary.
 
@@ -154,11 +154,11 @@ Counts the number of entries in a set, for which the given block returns true:
 
 Return the maximum and the minimum values in a collection. You will have to write a comperator, which compares two elements.
 
-- `- (NSObject *) max:(CompareArrayBlock) block;`
-- `- (NSObject *) min:(CompareArrayBlock) block;`
+- `- (id) max:(CompareArrayBlock) block;`
+- `- (id) min:(CompareArrayBlock) block;`
 
-- `- (NSObject *) max:(CompareDictBlock) block;`
-- `- (NSObject *) min:(CompareDictBlock) block;`
+- `- (id) max:(CompareDictBlock) block;`
+- `- (id) min:(CompareDictBlock) block;`
 
 Here's an example that gets the minimum and the maximum value from the array and dict described above:
 
@@ -237,7 +237,7 @@ Example:
 
 ###first
 
-- `- (NSObject *) first;`
+- `- (id) first;`
 
 Just a shortcut for [array objectAtIndex:0];
 
