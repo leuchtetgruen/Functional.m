@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
+
 typedef void (^VoidIteratorArrayBlock)(id obj);
 typedef void (^VoidIteratorDictBlock)(id key, id value);
 
@@ -26,8 +27,19 @@ typedef NSComparisonResult (^CompareDictBlock) (id k1, id v1 , id k2, id v2);
 typedef void (^VoidBlock) ();
 
 
+static BOOL F_concurrently = NO;
+static dispatch_queue_t F_queue;
 
 @interface F : NSObject
+    + (void) useConcurrency;
+    + (void) dontUseConcurrency;
+    + (void) useQueue:(dispatch_queue_t) queue;
+
+    + (void) concurrently:(VoidBlock) block;
+    + (void) concurrently:(VoidBlock)block withQueue:(dispatch_queue_t) queue;
+
+
+
     + (void) eachInArray:(NSArray *) arr withBlock:(VoidIteratorArrayBlock) block;
     + (void) eachInDict:(NSDictionary *) dict withBlock:(VoidIteratorDictBlock) block;
 

@@ -10,32 +10,107 @@
 
 @implementation F
 
++ (void) useConcurrency {
+    NSLog(@"ATTENTION - USING CONCURRENCY WILL RESULT IN A NON-SEQUENTIAL EXECUTION OF THE PASSED BLOCKS");
+    F_concurrently = YES;
+    F_queue = dispatch_get_global_queue(0, 0);
+}
+
++ (void) dontUseConcurrency {
+    F_concurrently = NO;
+}
+
++ (void) useQueue:(dispatch_queue_t) queue {
+    F_queue = queue;
+}
+
++ (void) concurrently:(VoidBlock) block {
+    [self useConcurrency];
+    block();
+    [self dontUseConcurrency];
+}
+
++ (void) concurrently:(VoidBlock)block withQueue:(dispatch_queue_t) queue {
+    [self useConcurrency];
+    [self useQueue:queue];
+    block();
+    [self dontUseConcurrency];
+}
+
 + (void) eachInArray:(NSArray *) arr withBlock:(VoidIteratorArrayBlock) block {
-    [arr enumerateObjectsUsingBlock:^(__strong id obj, NSUInteger idx, BOOL *stop) {
-        block(obj);
-    }];
+    if (F_concurrently) {
+        dispatch_apply([arr count], F_queue, ^(size_t i) {
+            block([arr objectAtIndex:i]);
+        });
+    }
+    else {
+        [arr enumerateObjectsUsingBlock:^(__strong id obj, NSUInteger idx, BOOL *stop) {
+            block(obj);
+        }];        
+    }
 }
 
 + (void) eachInDict:(NSDictionary *) dict withBlock:(VoidIteratorDictBlock) block {
-    [dict enumerateKeysAndObjectsUsingBlock:^(__strong id key, __strong id obj, BOOL *stop) {
-        block(key, obj);
-    }];
+    if (F_concurrently) {
+        NSArray *keys = [dict allKeys];
+        dispatch_apply([keys count], F_queue, ^(size_t i) {
+            id key = [keys objectAtIndex:i];
+            block(key, [dict objectForKey:key]);
+        });
+    }
+    else {
+        [dict enumerateKeysAndObjectsUsingBlock:^(__strong id key, __strong id obj, BOOL *stop) {
+            block(key, obj);
+        }];        
+    }
 }
 
 
 + (NSArray *) mapArray:(NSArray *) arr withBlock:(MapArrayBlock) block {
-    NSMutableArray *mutArr = [NSMutableArray array];
-    for (id obj in arr) {
-        [mutArr addObject:block(obj)];
+    NSMutableArray *mutArr = [NSMutableArray arrayWithCapacity:[arr count]];
+    NSLog(@"Count : %d", [arr count]);
+    
+    if (F_concurrently) {
+        for (int i=0; i < [arr count]; i++) {
+            [mutArr addObject:[NSNull null]];
+        }
+        dispatch_semaphore_t itemLock = dispatch_semaphore_create(1);
+        dispatch_apply([arr count], F_queue, ^(size_t i) {
+            id o = block([arr objectAtIndex:i]);
+            dispatch_semaphore_wait(itemLock, DISPATCH_TIME_FOREVER);
+            [mutArr replaceObjectAtIndex:i withObject:o];
+            dispatch_semaphore_signal(itemLock);
+        });
+        dispatch_release(itemLock);
+    }
+    else {
+        for (id obj in arr) {
+            [mutArr addObject:block(obj)];
+        }        
     }
     return [NSArray arrayWithArray:mutArr];    
 }
 
 + (NSDictionary *) mapDict:(NSDictionary *) dict withBlock:(MapDictBlock) block {
-    NSMutableDictionary *mutDict = [NSMutableDictionary dictionary];
-    for (id key in dict) {
-        id obj = [dict objectForKey:key];
-        [mutDict setValue:block(key, obj) forKey:key];
+    NSMutableDictionary *mutDict = [NSMutableDictionary dictionaryWithCapacity:[[dict allKeys] count]];
+    
+    if (F_concurrently) {
+        dispatch_semaphore_t itemLock = dispatch_semaphore_create(2);
+        NSArray *keys = [dict allKeys];
+        dispatch_apply([keys count], F_queue, ^(size_t i) {
+            id key = [keys objectAtIndex:i];
+            id map_o = block(key, [dict objectForKey:key]);
+            dispatch_semaphore_wait(itemLock, DISPATCH_TIME_FOREVER);
+            [mutDict setValue:map_o forKey:key];
+            dispatch_semaphore_signal(itemLock);
+        });
+        dispatch_release(itemLock);
+    }
+    else {
+        for (id key in dict) {
+            id obj = [dict objectForKey:key];
+            [mutDict setValue:block(key, obj) forKey:key];
+        }        
     }
     return [NSDictionary dictionaryWithDictionary:mutDict];
 }
@@ -56,85 +131,215 @@
 }
 
 + (NSArray *) filterArray:(NSArray *) arr withBlock:(BoolArrayBlock) block {
-    NSMutableArray *mutArr = [NSMutableArray array];
-    for (id obj in arr) {
-        if (block(obj)) [mutArr addObject:obj];
+    if (F_concurrently) {
+        NSMutableArray *nilArray = [NSMutableArray arrayWithCapacity:[arr count]];
+        for (int i=0; i < [arr count]; i++) {
+            [nilArray addObject:[NSNull null]];
+        }
+        dispatch_semaphore_t itemLock = dispatch_semaphore_create(1);
+        dispatch_apply([arr count], F_queue, ^(size_t i) {
+            BOOL keep = block([arr objectAtIndex:i]);
+            if (keep) {
+                dispatch_semaphore_wait(itemLock, DISPATCH_TIME_FOREVER);                
+                [nilArray replaceObjectAtIndex:i withObject:[arr objectAtIndex:i]];
+                dispatch_semaphore_signal(itemLock);                
+            }
+        });
+        [nilArray removeObjectIdenticalTo:[NSNull null]];
+        dispatch_release(itemLock);
+        return [NSArray arrayWithArray:nilArray];
     }
-    return [NSArray arrayWithArray:mutArr];
+    else {
+        NSMutableArray *mutArr = [NSMutableArray array];        
+        for (id obj in arr) {
+            if (block(obj)) [mutArr addObject:obj];
+        }        
+        return [NSArray arrayWithArray:mutArr];        
+    }
 }
 
 + (NSDictionary *) filterDictionary:(NSDictionary *) dict withBlock:(BoolDictionaryBlock) block {
-    NSMutableDictionary *mutDict = [NSMutableDictionary dictionary];
-    for (id key in dict) {
-        if (block(key, [dict objectForKey:key])) [mutDict setObject:[dict objectForKey:key]  forKey:key];
+    NSMutableDictionary *mutDict = [NSMutableDictionary dictionaryWithCapacity:[[dict allKeys] count]];
+    if (F_concurrently) {
+        dispatch_semaphore_t itemLock = dispatch_semaphore_create(1);
+        NSArray *keys = [dict allKeys];
+        dispatch_apply([keys count], F_queue, ^(size_t i) {
+            id key = [keys objectAtIndex:i];
+            BOOL keep = block(key, [dict objectForKey:key]);
+            if (keep) {
+                dispatch_semaphore_wait(itemLock, DISPATCH_TIME_FOREVER);
+                [mutDict setObject:[dict objectForKey:key] forKey:key];
+                dispatch_semaphore_signal(itemLock);
+            }
+        });
+        dispatch_release(itemLock);
+    }
+    else {
+        for (id key in dict) {
+            if (block(key, [dict objectForKey:key])) [mutDict setObject:[dict objectForKey:key]  forKey:key];
+        }        
     }
     return [NSDictionary dictionaryWithDictionary:mutDict];
 }
 
 + (NSArray *) rejectArray:(NSArray *) arr withBlock:(BoolArrayBlock) block {
-    NSMutableArray *mutArr = [NSMutableArray array];
-    for (id obj in arr) {
-        if (!block(obj)) [mutArr addObject:obj];
+    if (F_concurrently) {
+        NSMutableArray *nilArray = [NSMutableArray arrayWithCapacity:[arr count]];
+        for (int i=0; i < [arr count]; i++) {
+            [nilArray addObject:[NSNull null]];
+        }
+        dispatch_semaphore_t itemLock = dispatch_semaphore_create(1);
+        dispatch_apply([arr count], F_queue, ^(size_t i) {
+            BOOL keep = !block([arr objectAtIndex:i]);
+            if (keep) {
+                dispatch_semaphore_wait(itemLock, DISPATCH_TIME_FOREVER);                
+                [nilArray replaceObjectAtIndex:i withObject:[arr objectAtIndex:i]];
+                dispatch_semaphore_signal(itemLock);                
+            }
+        });
+        [nilArray removeObjectIdenticalTo:[NSNull null]];
+        dispatch_release(itemLock);
+        return [NSArray arrayWithArray:nilArray];
     }
-    return [NSArray arrayWithArray:mutArr];
+    else {
+        NSMutableArray *mutArr = [NSMutableArray array];
+        for (id obj in arr) {
+            if (!block(obj)) [mutArr addObject:obj];
+        }
+        return [NSArray arrayWithArray:mutArr];        
+    }
 }
 
 + (NSDictionary *) rejectDictionary:(NSDictionary *) dict withBlock:(BoolDictionaryBlock) block {
     NSMutableDictionary *mutDict = [NSMutableDictionary dictionary];
-    for (id key in dict) {
-        if (!block(key, [dict objectForKey:key])) [mutDict setObject:[dict objectForKey:key]  forKey:key];
+    if (F_concurrently) {
+        dispatch_semaphore_t itemLock = dispatch_semaphore_create(1);
+        NSArray *keys = [dict allKeys];
+        dispatch_apply([keys count], F_queue, ^(size_t i) {
+            id key = [keys objectAtIndex:i];
+            BOOL keep = !block(key, [dict objectForKey:key]);
+            if (keep) {
+                dispatch_semaphore_wait(itemLock, DISPATCH_TIME_FOREVER);
+                [mutDict setObject:[dict objectForKey:key] forKey:key];
+                dispatch_semaphore_signal(itemLock);
+            }
+        });
+        dispatch_release(itemLock);        
+    }
+    else {
+        for (id key in dict) {
+            if (!block(key, [dict objectForKey:key])) [mutDict setObject:[dict objectForKey:key]  forKey:key];
+        }        
     }
     return [NSDictionary dictionaryWithDictionary:mutDict];
 }
 
 + (BOOL) allInArray:(NSArray *) arr withBlock:(BoolArrayBlock) block {
-    BOOL validForAll = true;
-    for (id obj in arr) {
-        validForAll = (validForAll && block(obj));
-        if (!validForAll) break;
+    __block BOOL validForAll = true;
+    
+    if (F_concurrently) {
+        dispatch_apply([arr count], F_queue, ^(size_t i) {
+            if (!validForAll) return;
+            validForAll = (validForAll && block([arr objectAtIndex:i]));
+        });
+    }
+    else {
+        for (id obj in arr) {
+            validForAll = (validForAll && block(obj));
+            if (!validForAll) break;
+        }        
     }
     return validForAll;
 }
 
 + (BOOL) allInDictionary:(NSDictionary *) dict withBlock:(BoolDictionaryBlock) block {
-    BOOL validForAll = true;
-    for (id key in dict) {
-        validForAll = (validForAll && block(key, [dict objectForKey:key]));
-        if (!validForAll) break;
+    __block BOOL validForAll = true;
+    
+    if (F_concurrently) {
+        NSArray *keys = [dict allKeys];
+        dispatch_apply([keys count], F_queue, ^(size_t i) {
+            if (!validForAll) return;
+            id key = [keys objectAtIndex:i];
+            validForAll = (validForAll && block(key, [dict objectForKey:key]));
+        });
+    }
+    else {
+        for (id key in dict) {
+            validForAll = (validForAll && block(key, [dict objectForKey:key]));
+            if (!validForAll) break;
+        }        
     }
     return validForAll;
 }
 
 + (BOOL) anyInArray:(NSArray *) arr withBlock:(BoolArrayBlock) block {
-    BOOL validForAny = false;
-    for (id obj in arr) {
-        validForAny = (validForAny || block(obj));
-        if (validForAny) break;
+    __block BOOL validForAny = false;
+    
+    if (F_concurrently) {
+        dispatch_apply([arr count], F_queue, ^(size_t i) {
+            if (validForAny) return;
+            validForAny = (validForAny || block([arr objectAtIndex:i]));
+        });
+    }
+    else {
+        for (id obj in arr) {
+            validForAny = (validForAny || block(obj));
+            if (validForAny) break;
+        }        
     }
     return validForAny;
 }
 
 + (BOOL) anyInDictionary:(NSDictionary *) dict withBlock:(BoolDictionaryBlock) block {
-    BOOL validForAny = false;
-    for (id key in dict) {
-        validForAny = (validForAny || block(key, [dict objectForKey:key]));
-        if (validForAny) break;
+    __block BOOL validForAny = false;
+    
+    if (F_concurrently) {
+        NSArray *keys = [dict allKeys];
+        dispatch_apply([keys count], F_queue, ^(size_t i) {
+            if (validForAny) return;
+            id key = [keys objectAtIndex:i];
+            validForAny = (validForAny || block(key, [dict objectForKey:key]));
+        });        
+    }
+    else {
+        for (id key in dict) {
+            validForAny = (validForAny || block(key, [dict objectForKey:key]));
+            if (validForAny) break;
+        }        
     }
     return validForAny;    
 }
 
 + (NSNumber *) countInArray:(NSArray *) arr withBlock:(BoolArrayBlock) block {
-    NSInteger ctr = 0;
-    for (id obj in arr) {
-        if(block(obj)) ctr++;
+    __block NSInteger ctr = 0;
+    
+    if (F_concurrently) {
+        dispatch_apply([arr count], F_queue, ^(size_t i) {
+            if (block([arr objectAtIndex:i])) ctr++;
+        });
+    }
+    else {
+        for (id obj in arr) {
+            if(block(obj)) ctr++;
+        }        
     }
     return [NSNumber numberWithInt:ctr];
 }
 
 + (NSNumber *) countInDictionary:(NSDictionary *) dict withBlock:(BoolDictionaryBlock) block {
-    NSInteger ctr = 0;
-    for (id key in dict) {
-        if (block(key, [dict objectForKey:key])) ctr++;
+    __block NSInteger ctr = 0;
+    
+    if (F_concurrently) {
+        NSArray *keys = [dict allKeys];
+        dispatch_apply([keys count], F_queue, ^(size_t i) {
+            id key = [keys objectAtIndex:i];
+            if (block(key, [dict objectForKey:key])) ctr++;
+        });
+    }
+    else {
+        for (id key in dict) {
+            if (block(key, [dict objectForKey:key])) ctr++;
+        }        
     }
     return [NSNumber numberWithInt:ctr];
 }
