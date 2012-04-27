@@ -28,6 +28,8 @@
 
     - (id) first;
     - (NSArray *) reverse;
+    - (NSArray *) arrayUntilIndex:(NSInteger) idx;
+    - (NSArray *) arrayFromIndexOn:(NSInteger) idx;
 
     + (NSArray *) arrayFrom:(NSInteger) from To:(NSInteger) to;
 @end

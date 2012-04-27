@@ -270,3 +270,16 @@ Just a shortcut for `[array objectAtIndex:0]`;
 - `- (NSArray *) reverse;`
 
 Returns the reversed array
+
+###arrayUntilIndex and arrayFromIndexOn
+
+These are helper functions. They return the elements of the array they are called on until (excluding) the given index or from the given index on (including).
+
+- `- (NSArray *) arrayUntilIndex:(NSInteger) idx;`
+- `- (NSArray *) arrayFromIndexOn:(NSInteger) idx;`
+
+```objc
+	NSArray *untilTwo = [numberArray arrayUntilIndex:2];
+	NSArray *afterTwo = [numberArray arrayFromIndexOn:2];
+	NSLog(@"The array until idx 2 : %@ and thereafter : %@", untilTwo, afterTwo); // 1,2 and 3,4,5
+```

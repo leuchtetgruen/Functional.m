@@ -80,4 +80,14 @@
     return [NSArray arrayWithArray:mutArr];
 }
 
+// Just a helper method
+- (NSArray *) arrayUntilIndex:(NSInteger) idx {
+    return [self subarrayWithRange:NSMakeRange(0, idx)];
+}
+
+// Just a helper method
+- (NSArray *) arrayFromIndexOn:(NSInteger) idx {
+    return [self subarrayWithRange:NSMakeRange(idx, [self count] - idx)];
+}
+
 @end
