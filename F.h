@@ -72,5 +72,7 @@ static dispatch_queue_t F_queue;
     + (NSDictionary *) groupArray:(NSArray *) arr withBlock:(MapArrayBlock) block;
 //    + (NSDictionary *) groupDictionary:(NSDictionary *) dict withBlock:(MapDictBlock) block;
 
+    + (NSArray *) dropFromArray:(NSArray *) arr whileBlock:(BoolArrayBlock) block;
+
     + (void) times:(NSNumber *) nr RunBlock:(VoidBlock) block;
 @end

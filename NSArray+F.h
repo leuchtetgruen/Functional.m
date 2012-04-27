@@ -24,6 +24,8 @@
     - (NSArray *) sort:(NSComparator) block;
     - (NSDictionary *) group:(MapArrayBlock) block;
 
+    - (NSArray *) dropWhile:(BoolArrayBlock) block;
+
     - (id) first;
     - (NSArray *) reverse;
 

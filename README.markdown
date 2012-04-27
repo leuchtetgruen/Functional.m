@@ -149,6 +149,18 @@ Counts the number of entries in a set, for which the given block returns true:
     NSLog(@"The number of even elements are : Array %@ - Dict %@", ctEvenArr, ctEvenDict);
 ```
 
+##dropWhile
+
+Drops every entry before the first item the block returns true for.
+
+- `- (NSArray *) dropWhile:(BoolArrayBlock) block;`
+
+```objc
+	NSArray *droppedUntilThree = [numberArray dropWhile:^BOOL(NSNumber *nr) {
+	    return ([nr integerValue] < 3);
+	}];
+	NSLog(@"Array from 3 : %@", droppedUntilThree);
+```
 
 ##max and min
 

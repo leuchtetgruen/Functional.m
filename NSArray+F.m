@@ -49,6 +49,9 @@
 - (id) min:(CompareArrayBlock) block {
     return [F minArray:self withBlock:block];
 }
+- (NSArray *) dropWhile:(BoolArrayBlock) block {
+    return [F dropFromArray:self whileBlock:block];
+}
 
 // This is really just an alias
 - (NSArray *) sort:(NSComparator) block {

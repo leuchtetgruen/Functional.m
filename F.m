@@ -13,7 +13,7 @@
 + (void) useConcurrency {
     NSLog(@"ATTENTION - USING CONCURRENCY WILL RESULT IN A NON-SEQUENTIAL EXECUTION OF THE PASSED BLOCKS");
     F_concurrently = YES;
-    F_queue = dispatch_get_global_queue(0, 0);
+    F_queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
 }
 
 + (void) dontUseConcurrency {
@@ -420,6 +420,18 @@
         [mutDictOfArrays setObject:[NSArray arrayWithArray:mutArr] forKey:key];
     }
     return [NSDictionary dictionaryWithDictionary:mutDictOfArrays];
+}
+
++ (NSArray *) dropFromArray:(NSArray *) arr whileBlock:(BoolArrayBlock) block {
+    NSMutableArray *mutArray = [NSMutableArray array];
+    NSUInteger i = 0;
+    for (i = 0; i < [arr count]; i++) {
+        if (!block([arr objectAtIndex:i])) break;
+    }
+    for (NSUInteger j=i; j < [arr count]; j++) {
+        [mutArray addObject:[arr objectAtIndex:j]];
+    }
+    return [NSArray arrayWithArray:mutArray];
 }
 
 + (void) times:(NSNumber *) nr RunBlock:(VoidBlock) block {
