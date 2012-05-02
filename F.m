@@ -50,6 +50,19 @@
     }
 }
 
++ (void) eachInArrayWithIndex:(NSArray *) arr withBlock:(VoidIteratorArrayWithIndexBlock) block {
+    if (F_concurrently) {
+        dispatch_apply([arr count], F_queue, ^(size_t i) {
+            block([arr objectAtIndex:i], i);
+        });
+    }
+    else {
+        [arr enumerateObjectsUsingBlock:^(__strong id obj, NSUInteger idx, BOOL *stop) {
+            block(obj, idx);
+        }];        
+    }    
+}
+
 + (void) eachInDict:(NSDictionary *) dict withBlock:(VoidIteratorDictBlock) block {
     if (F_concurrently) {
         NSArray *keys = [dict allKeys];
@@ -437,4 +450,39 @@
 + (void) times:(NSNumber *) nr RunBlock:(VoidBlock) block {
     for (int i=0; i < [nr intValue]; i++) block();
 }
+
+
++ (void) asynchronously:(VoidBlock) block {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), block);
+}
+
++ (void) onUIThread:(VoidBlock) block {
+    if ([NSThread isMainThread]) block();
+    else dispatch_sync(dispatch_get_main_queue(), block);
+}
+
++ (NSArray *) mapRangeFrom:(NSInteger) from To:(NSInteger) to withBlock:(MapIntBlock) block {
+    NSMutableArray *mutArr = [NSMutableArray arrayWithCapacity:(to-from)];
+    
+    if (F_concurrently) {
+        for (NSInteger i=from; i < to; i++) {
+            [mutArr addObject:[NSNull null]];
+        }
+        dispatch_semaphore_t itemLock = dispatch_semaphore_create(1);
+        dispatch_apply((to-from), F_queue, ^(size_t i) {
+            id o = block(from + i);
+            dispatch_semaphore_wait(itemLock, DISPATCH_TIME_FOREVER);
+            [mutArr replaceObjectAtIndex:i withObject:o];
+            dispatch_semaphore_signal(itemLock);
+        });
+        dispatch_release(itemLock);
+    }
+    else {
+        for (NSInteger i=from; i<to; i++) {
+            [mutArr addObject:block(i)];
+        }        
+    }
+    return [NSArray arrayWithArray:mutArr];   
+}
+
 @end

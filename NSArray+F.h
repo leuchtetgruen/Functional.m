@@ -11,6 +11,7 @@
 
 @interface NSArray(F)
     - (void) each:(VoidIteratorArrayBlock) block;
+    - (void) eachWithIndex:(VoidIteratorArrayWithIndexBlock) block;
     - (NSArray *) map:(MapArrayBlock) block;
     - (id) reduce:(ReduceArrayBlock) block withInitialMemo:(id) memo;
     - (NSArray *) filter:(BoolArrayBlock) block;
@@ -28,6 +29,7 @@
 
     - (id) first;
     - (NSArray *) reverse;
+
     - (NSArray *) arrayUntilIndex:(NSInteger) idx;
     - (NSArray *) arrayFromIndexOn:(NSInteger) idx;
 

@@ -14,6 +14,10 @@
     [F eachInArray:self withBlock:block];
 }
 
+- (void) eachWithIndex:(VoidIteratorArrayWithIndexBlock) block {
+    [F eachInArrayWithIndex:self withBlock:block];
+}
+
 - (NSArray *) map:(MapArrayBlock) block {
     return [F mapArray:self withBlock:block];
 }

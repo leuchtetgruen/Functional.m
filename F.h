@@ -10,10 +10,12 @@
 
 
 typedef void (^VoidIteratorArrayBlock)(id obj);
+typedef void (^VoidIteratorArrayWithIndexBlock)(id obj, NSInteger idx);
 typedef void (^VoidIteratorDictBlock)(id key, id value);
 
 typedef id (^MapArrayBlock)(id obj);
 typedef id (^MapDictBlock)(id key, id obj);
+typedef id (^MapIntBlock) (NSInteger i);
 
 typedef id (^ReduceArrayBlock)(id memo, id obj);
 typedef id (^ReduceDictBlock)(id memo, id key, id value);
@@ -41,6 +43,7 @@ static dispatch_queue_t F_queue;
 
 
     + (void) eachInArray:(NSArray *) arr withBlock:(VoidIteratorArrayBlock) block;
+    + (void) eachInArrayWithIndex:(NSArray *) arr withBlock:(VoidIteratorArrayWithIndexBlock) block;
     + (void) eachInDict:(NSDictionary *) dict withBlock:(VoidIteratorDictBlock) block;
 
     + (NSArray *) mapArray:(NSArray *) arr withBlock:(MapArrayBlock) block;
@@ -75,4 +78,8 @@ static dispatch_queue_t F_queue;
     + (NSArray *) dropFromArray:(NSArray *) arr whileBlock:(BoolArrayBlock) block;
 
     + (void) times:(NSNumber *) nr RunBlock:(VoidBlock) block;
+
+    + (void) asynchronously:(VoidBlock) block;
+    + (void) onUIThread:(VoidBlock) block;
+    + (NSArray *) mapRangeFrom:(NSInteger) from To:(NSInteger) to withBlock:(MapIntBlock) block;
 @end
