@@ -81,7 +81,6 @@
 
 + (NSArray *) mapArray:(NSArray *) arr withBlock:(MapArrayBlock) block {
     NSMutableArray *mutArr = [NSMutableArray arrayWithCapacity:[arr count]];
-    NSLog(@"Count : %d", [arr count]);
     
     if (F_concurrently) {
         for (int i=0; i < [arr count]; i++) {
