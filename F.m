@@ -9,6 +9,7 @@
 #import "F.h"
 
 @implementation F
+static dispatch_queue_t F_queue;
 
 + (void) useConcurrency {
     NSLog(@"ATTENTION - USING CONCURRENCY WILL RESULT IN A NON-SEQUENTIAL EXECUTION OF THE PASSED BLOCKS");
