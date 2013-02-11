@@ -35,9 +35,6 @@ typedef NSComparisonResult (^CompareDictBlock) (id k1, id v1 , id k2, id v2);
 typedef void (^VoidBlock) ();
 
 
-static BOOL F_concurrently = NO;
-
-
 @interface F : NSObject
     + (void) useConcurrency;
     + (void) dontUseConcurrency;
