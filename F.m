@@ -94,7 +94,6 @@ static dispatch_queue_t F_queue;
             [mutArr replaceObjectAtIndex:i withObject:o];
             dispatch_semaphore_signal(itemLock);
         });
-        dispatch_release(itemLock);
     }
     else {
         for (id obj in arr) {
@@ -117,7 +116,6 @@ static dispatch_queue_t F_queue;
             [mutDict setValue:map_o forKey:key];
             dispatch_semaphore_signal(itemLock);
         });
-        dispatch_release(itemLock);
     }
     else {
         for (id key in dict) {
@@ -159,7 +157,6 @@ static dispatch_queue_t F_queue;
             }
         });
         [nilArray removeObjectIdenticalTo:[NSNull null]];
-        dispatch_release(itemLock);
         return [NSArray arrayWithArray:nilArray];
     }
     else {
@@ -185,7 +182,6 @@ static dispatch_queue_t F_queue;
                 dispatch_semaphore_signal(itemLock);
             }
         });
-        dispatch_release(itemLock);
     }
     else {
         for (id key in dict) {
@@ -211,7 +207,6 @@ static dispatch_queue_t F_queue;
             }
         });
         [nilArray removeObjectIdenticalTo:[NSNull null]];
-        dispatch_release(itemLock);
         return [NSArray arrayWithArray:nilArray];
     }
     else {
@@ -237,7 +232,6 @@ static dispatch_queue_t F_queue;
                 dispatch_semaphore_signal(itemLock);
             }
         });
-        dispatch_release(itemLock);        
     }
     else {
         for (id key in dict) {
@@ -475,7 +469,6 @@ static dispatch_queue_t F_queue;
             [mutArr replaceObjectAtIndex:i withObject:o];
             dispatch_semaphore_signal(itemLock);
         });
-        dispatch_release(itemLock);
     }
     else {
         for (NSInteger i=from; i<to; i++) {
