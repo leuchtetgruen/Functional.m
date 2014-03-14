@@ -50,7 +50,7 @@ static BOOL F_concurrently __unused = NO;
     + (NSDictionary *) mapDict:(NSDictionary *) dict withBlock:(MapDictBlock) block;
 
     + (NSObject *) reduceArray:(NSArray *) arr withBlock:(ReduceArrayBlock) block andInitialMemo:(id) memo;
-    + (NSObject *) reduceDictionary:(NSDictionary *) dict withBlock:(ReduceDictBlock) block andInitialMemo:(id) memo; 
+    + (NSObject *) reduceDictionary:(NSDictionary *) dict withBlock:(ReduceDictBlock) block andInitialMemo:(id) memo;
 
     + (NSArray *) filterArray:(NSArray *) arr withBlock:(BoolArrayBlock) block;
     + (NSDictionary *) filterDictionary:(NSDictionary *) dict withBlock:(BoolDictionaryBlock) block;
