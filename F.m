@@ -330,7 +330,7 @@ static dispatch_queue_t F_queue;
             if(block(obj)) ctr++;
         }
     }
-    return [NSNumber numberWithInt:ctr];
+    return [NSNumber numberWithInteger:ctr];
 }
 
 + (NSNumber *) countInDictionary:(NSDictionary *) dict withBlock:(BoolDictionaryBlock) block {
@@ -348,7 +348,7 @@ static dispatch_queue_t F_queue;
             if (block(key, [dict objectForKey:key])) ctr++;
         }
     }
-    return [NSNumber numberWithInt:ctr];
+    return [NSNumber numberWithInteger:ctr];
 }
 
 
