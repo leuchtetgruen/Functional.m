@@ -8,12 +8,6 @@
 
 #import <Foundation/Foundation.h>
 
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000 // iOS 6.0 or later
-#define NEEDS_DISPATCH_RETAIN_RELEASE 0
-#else                                         // iOS 5.X or earlier
-#define NEEDS_DISPATCH_RETAIN_RELEASE 1
-#endif
-
 
 typedef void (^VoidIteratorArrayBlock)(id obj);
 typedef void (^VoidIteratorArrayWithIndexBlock)(id obj, NSInteger idx);
@@ -34,7 +28,9 @@ typedef NSComparisonResult (^CompareDictBlock) (id k1, id v1 , id k2, id v2);
 
 typedef void (^VoidBlock) ();
 
+
 static BOOL F_concurrently __unused = NO;
+
 
 @interface F : NSObject
     + (void) useConcurrency;
