@@ -22,7 +22,7 @@
     return [F reduceDictionary:self withBlock:block andInitialMemo:memo];
 }
 
-- filter:(BoolDictionaryBlock) block {
+- (id) filter:(BoolDictionaryBlock) block {
     return [F filterDictionary:self withBlock:block];
 }
 

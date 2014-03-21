@@ -10,6 +10,7 @@
 
 @implementation F
 static dispatch_queue_t F_queue;
+static BOOL F_concurrently = NO;
 
 + (void) useConcurrency {
     NSLog(@"ATTENTION - USING CONCURRENCY WILL RESULT IN A NON-SEQUENTIAL EXECUTION OF THE PASSED BLOCKS");
@@ -84,7 +85,7 @@ static dispatch_queue_t F_queue;
     NSMutableArray *mutArr = [NSMutableArray arrayWithCapacity:[arr count]];
 
     if (F_concurrently) {
-        for (int i=0; i < [arr count]; i++) {
+        for (NSUInteger i=0; i < [arr count]; i++) {
             [mutArr addObject:[NSNull null]];
         }
         dispatch_semaphore_t itemLock = dispatch_semaphore_create(1);
@@ -126,14 +127,14 @@ static dispatch_queue_t F_queue;
     return [NSDictionary dictionaryWithDictionary:mutDict];
 }
 
-+ (NSObject *) reduceArray:(NSArray *) arr withBlock:(ReduceArrayBlock) block andInitialMemo:(NSObject *) memo {
++ (NSObject *) reduceArray:(NSArray *) arr withBlock:(ReduceArrayBlock) block andInitialMemo:(__strong id) memo {
     for (id obj in arr) {
         memo = block(memo, obj);
     }
     return memo;
 }
 
-+ (NSObject *) reduceDictionary:(NSDictionary *) dict withBlock:(ReduceDictBlock) block andInitialMemo:(NSObject *) memo {
++ (NSObject *) reduceDictionary:(NSDictionary *) dict withBlock:(ReduceDictBlock) block andInitialMemo:(__strong id) memo {
     for (id key in dict) {
         id obj = [dict objectForKey:key];
         memo = block(memo, key, obj);
@@ -144,7 +145,7 @@ static dispatch_queue_t F_queue;
 + (NSArray *) filterArray:(NSArray *) arr withBlock:(BoolArrayBlock) block {
     if (F_concurrently) {
         NSMutableArray *nilArray = [NSMutableArray arrayWithCapacity:[arr count]];
-        for (int i=0; i < [arr count]; i++) {
+        for (NSUInteger i=0; i < [arr count]; i++) {
             [nilArray addObject:[NSNull null]];
         }
         dispatch_semaphore_t itemLock = dispatch_semaphore_create(1);
@@ -194,7 +195,7 @@ static dispatch_queue_t F_queue;
 + (NSArray *) rejectArray:(NSArray *) arr withBlock:(BoolArrayBlock) block {
     if (F_concurrently) {
         NSMutableArray *nilArray = [NSMutableArray arrayWithCapacity:[arr count]];
-        for (int i=0; i < [arr count]; i++) {
+        for (NSUInteger i=0; i < [arr count]; i++) {
             [nilArray addObject:[NSNull null]];
         }
         dispatch_semaphore_t itemLock = dispatch_semaphore_create(1);
