@@ -17,6 +17,8 @@ typedef id (^MapArrayBlock)(id obj);
 typedef id (^MapDictBlock)(id key, id obj);
 typedef id (^MapIntBlock) (NSInteger i);
 
+typedef NSArray * (^BindArrayBlock)(id obj);
+
 typedef id (^ReduceArrayBlock)(id memo, id obj);
 typedef id (^ReduceDictBlock)(id memo, id key, id value);
 
@@ -45,6 +47,9 @@ typedef void (^VoidBlock) ();
 
     + (NSArray *) mapArray:(NSArray *) arr withBlock:(MapArrayBlock) block;
     + (NSDictionary *) mapDict:(NSDictionary *) dict withBlock:(MapDictBlock) block;
+
+    + (NSArray *) bindArray:(NSArray *) arr withBlock:(BindArrayBlock) block;
+    + (NSArray *) zipArray:(NSArray *) lhs with:(NSArray *) rhs;
 
     + (NSObject *) reduceArray:(NSArray *) arr withBlock:(ReduceArrayBlock) block andInitialMemo:(id) memo;
     + (NSObject *) reduceDictionary:(NSDictionary *) dict withBlock:(ReduceDictBlock) block andInitialMemo:(id) memo;

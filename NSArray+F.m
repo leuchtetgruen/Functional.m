@@ -26,6 +26,11 @@
     return [F reduceArray:self withBlock:block andInitialMemo:memo];
 }
 
+- (NSArray *) bind:(BindArrayBlock) block
+{
+    return [F bindArray:self withBlock:block];
+}
+
 - (NSArray *) filter:(BoolArrayBlock) block {
     return [F filterArray:self withBlock:block];
 }
@@ -66,9 +71,18 @@
     return [F groupArray:self withBlock:block];
 }
 
+- (NSArray *) zip:(NSArray *) rhs
+{
+    return [F zipArray:self with:rhs];
+}
+
 // Just a helper method
 - (id) first {
     return [self objectAtIndex:0];
+}
+
+- (NSArray *) tail {
+    return [self arrayFromIndexOn:1];
 }
 
 // Just a helper method
@@ -93,5 +107,6 @@
 - (NSArray *) arrayFromIndexOn:(NSInteger) idx {
     return [self subarrayWithRange:NSMakeRange(idx, [self count] - idx)];
 }
+
 
 @end

@@ -14,6 +14,7 @@
     - (void) eachWithIndex:(VoidIteratorArrayWithIndexBlock) block;
     - (NSArray *) map:(MapArrayBlock) block;
     - (id) reduce:(ReduceArrayBlock) block withInitialMemo:(id) memo;
+    - (NSArray *) bind:(BindArrayBlock) block;
     - (NSArray *) filter:(BoolArrayBlock) block;
     - (NSArray *) reject:(BoolArrayBlock) block;
     - (BOOL) isValidForAll:(BoolArrayBlock) block;
@@ -24,10 +25,12 @@
     - (id) min:(CompareArrayBlock) block;
     - (NSArray *) sort:(NSComparator) block;
     - (NSDictionary *) group:(MapArrayBlock) block;
+    - (NSArray *) zip:(NSArray *) rhs;
 
     - (NSArray *) dropWhile:(BoolArrayBlock) block;
 
     - (id) first;
+    - (NSArray *) tail;
     - (NSArray *) reverse;
 
     - (NSArray *) arrayUntilIndex:(NSInteger) idx;

@@ -104,6 +104,33 @@ static BOOL F_concurrently = NO;
     return [NSArray arrayWithArray:mutArr];
 }
 
++ (NSArray *) bindArray:(NSArray *) arr withBlock:(BindArrayBlock) block
+{
+    NSMutableArray *mutArr = [NSMutableArray arrayWithCapacity:[arr count]];
+    for (id obj in arr) {
+        [mutArr addObjectsFromArray:block(obj)];
+    }
+    return mutArr;
+}
+
++ (NSArray *) zipArray:(NSArray *) lhs with:(NSArray *) rhs
+{
+    NSEnumerator *lEnum = [lhs objectEnumerator];
+    NSEnumerator *rEnum = [rhs objectEnumerator];
+    NSMutableArray *mutArr = [NSMutableArray arrayWithCapacity:MIN([lhs count],[rhs count])];
+    
+    while (true) {
+        id leftObject = [lEnum nextObject];
+        id rightObject = [rEnum nextObject];
+        if (leftObject && rightObject) {
+            [mutArr addObject:@[leftObject,rightObject]];
+        } else {
+            break;
+        }
+    }
+    return mutArr;
+}
+
 + (NSDictionary *) mapDict:(NSDictionary *) dict withBlock:(MapDictBlock) block {
     NSMutableDictionary *mutDict = [NSMutableDictionary dictionaryWithCapacity:[[dict allKeys] count]];
 
