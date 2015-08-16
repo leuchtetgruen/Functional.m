@@ -265,6 +265,14 @@ Example:
 
 Just a shortcut for `[array objectAtIndex:0]`;
 
+###flatten
+
+- `-(NSArray *) flatten;`
+
+Creates a new array which contains all the elements in the current array, but 'unpacks' any arrays contained
+in it. Any nested arrays will be replaced by their respective objects, so that the final array only contains
+non-array objects.
+
 ###reverse
 
 - `- (NSArray *) reverse;`

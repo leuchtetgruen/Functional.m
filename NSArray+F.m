@@ -84,6 +84,20 @@
     return [NSArray arrayWithArray:mutArr];
 }
 
+- (id) flatten {
+    NSMutableArray *mtArr = [NSMutableArray array];
+    for (NSArray *a in self) {
+        if ([a conformsToProtocol:@protocol(NSFastEnumeration)]) {
+            for (id object in [a flatten]) {
+                [mtArr addObject:object];
+            }
+        } else {
+            [mtArr addObject:a];
+        }
+    }
+    return [NSArray arrayWithArray:mtArr];
+}
+
 // Just a helper method
 - (NSArray *) arrayUntilIndex:(NSInteger) idx {
     return [self subarrayWithRange:NSMakeRange(0, idx)];
