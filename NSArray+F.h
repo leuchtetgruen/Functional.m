@@ -29,6 +29,7 @@
 
     - (id) first;
     - (NSArray *) reverse;
+    - (NSArray *) flatten;
 
     - (NSArray *) arrayUntilIndex:(NSInteger) idx;
     - (NSArray *) arrayFromIndexOn:(NSInteger) idx;
