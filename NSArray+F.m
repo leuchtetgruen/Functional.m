@@ -86,11 +86,9 @@
 
 - (id) flatten {
     NSMutableArray *mtArr = [NSMutableArray array];
-    for (NSArray *a in self) {
-        if ([a conformsToProtocol:@protocol(NSFastEnumeration)]) {
-            for (id object in [a flatten]) {
-                [mtArr addObject:object];
-            }
+    for (id a in self) {
+        if ([a respondsToSelector:@selector(flatten)]) {
+            [mtArr addObjectsFromArray:[a flatten]];
         } else {
             [mtArr addObject:a];
         }
