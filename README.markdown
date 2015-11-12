@@ -265,6 +265,12 @@ Example:
 
 Just a shortcut for `[array objectAtIndex:0]`;
 
+###tail
+
+- `-(NSArray *) tail;`
+
+Extract the elements after the head of the array, which must be non-empty.
+
 ###flatten
 
 - `-(NSArray *) flatten;`
@@ -291,3 +297,15 @@ These are helper functions. They return the elements of the array they are calle
 	NSArray *afterTwo = [numberArray arrayFromIndexOn:2];
 	NSLog(@"The array until idx 2 : %@ and thereafter : %@", untilTwo, afterTwo); // 1,2 and 3,4,5
 ```
+
+###bind
+
+- `- (NSArray *) bind:(BindArrayBlock) block;`
+
+Maps block over the list, then concatenates (flattens) the result, where block is expected to take an item and return an array.
+
+###zip
+
+- `- (NSArray *) zip:(NSArray *) rhs;`
+ 
+zip takes two arrays and returns an array of corresponding pairs. If one input list is short, excess elements of the longer array are discarded.
